@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YonKous - Moto Taxi Rapide et Fiable en Haïti</title>
     <meta name="description" content="Commandez un moto taxi en quelques secondes. Service rapide, sécurisé et abordable dans toute la région.">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yonkous.ht/">
     <meta property="og:title" content="YonKous - Moto Taxi Rapide et Fiable en Haïti">
     <meta property="og:description" content="Jwenn yon moto taxi nan mwens pase 2 minit. Sèvis 24/7 nan tout rejyon an. Rapid, sekirize ak afordab.">
     <meta property="og:image" content="https://yonkous.ht/images/share.png">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://yonkous.ht/">
     <meta property="twitter:title" content="YonKous - Moto Taxi Rapide et Fiable en Haïti">
     <meta property="twitter:description" content="Jwenn yon moto taxi nan mwens pase 2 minit. Sèvis 24/7 nan tout rejyon an.">
     <meta property="twitter:image" content="https://yonkous.ht/images/share.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -1759,7 +1759,7 @@
             </div>
             <p>&copy; 2026 YonKous. Tout dwa rezève.</p>
             <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #999;">
-                Developper par <a href="https://sagacetech.com" target="_blank" style="color: #FFC107; text-decoration: none;">SagaceTech</a> | 
+                Developper par <a href="https://sagacetech.com" target="_blank" style="color: #FFC107; text-decoration: none;">SagaceTech</a> |
                 Contact: <a href="tel:+15634680355" style="color: #FFC107; text-decoration: none;">+1 563-468-0355</a>
             </p>
         </div>
@@ -1780,7 +1780,7 @@
 
             // Effets parallax pour desktop et mobile avec gestion dynamique
             // Effets parallax pour desktop et mobile avec gestion dynamique
-            
+
             // Speed lines (desktop uniquement)
             if (!isMobile) {
                 const speedLines = document.getElementById('speedLines');
@@ -1806,11 +1806,11 @@
             if (featuresSection) {
                 const rect = featuresSection.getBoundingClientRect();
                 const windowHeight = window.innerHeight;
-                
+
                 // Vérifier si la section est visible
                 const isInViewport = rect.top < windowHeight && rect.bottom > 0;
                 const sectionKey = 'features-section';
-                
+
                 if (isInViewport) {
                     let scrollProgress = 0;
                     if (rect.top < windowHeight) {
@@ -1826,7 +1826,7 @@
 
                         motoImage.style.transform = `translateX(${currentMotoPos}%)`;
                         motoImage.style.opacity = opacity;
-                        
+
                         // Marquer comme animé
                         animatedElements.set('moto', true);
 
@@ -2001,7 +2001,7 @@
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const navLinks = document.querySelector('.nav-links');
         let mobileOverlay = document.querySelector('.mobile-overlay');
-        
+
         // Create overlay if it doesn't exist
         if (!mobileOverlay) {
             mobileOverlay = document.createElement('div');

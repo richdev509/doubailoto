@@ -286,11 +286,11 @@
                 <label>Nimewo Telefòn <span class="required">*</span></label>
                 <div class="phone-input-group">
                     <div class="phone-prefix">+509</div>
-                    <input type="tel" 
-                           name="phone" 
-                           id="phone" 
-                           value="{{ old('phone') }}" 
-                           placeholder="2345-6789" 
+                    <input type="tel"
+                           name="phone"
+                           id="phone"
+                           value="{{ old('phone') }}"
+                           placeholder="2345-6789"
                            maxlength="8"
                            pattern="[2-5][0-9]{7}"
                            required>
@@ -327,29 +327,29 @@
     <script>
         // Validation du champ téléphone
         const phoneInput = document.getElementById('phone');
-        
+
         phoneInput.addEventListener('input', function(e) {
             // Supprimer tout ce qui n'est pas un chiffre
             let value = e.target.value.replace(/\D/g, '');
-            
+
             // Limiter à 8 chiffres
             if (value.length > 8) {
                 value = value.slice(0, 8);
             }
-            
+
             e.target.value = value;
         });
-        
+
         phoneInput.addEventListener('blur', function(e) {
             const value = e.target.value;
-            
+
             if (value.length > 0) {
                 // Vérifier que c'est exactement 8 chiffres
                 if (value.length !== 8) {
                     e.target.setCustomValidity('Nimewo telefòn dwe gen 8 chif');
                     return;
                 }
-                
+
                 // Vérifier que le premier chiffre est valide (2, 3, 4, ou 5)
                 const firstDigit = value[0];
                 if (!['2', '3', '4', '5'].includes(firstDigit)) {
@@ -357,11 +357,11 @@
                     return;
                 }
             }
-            
+
             // Réinitialiser la validation si tout est OK
             e.target.setCustomValidity('');
         });
-        
+
         // Réinitialiser la validation lors de la saisie
         phoneInput.addEventListener('input', function(e) {
             e.target.setCustomValidity('');
