@@ -474,5 +474,10 @@
             <a href="/contact" style="display: inline-block; background: #FFC107; color: #000; padding: 1rem 2.5rem; border-radius: 30px; font-weight: 700; text-decoration: none; transition: all 0.3s;">Kontakte Nou</a>
         </div>
     </div>
+    
+    <p style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #333; color: #999; font-size: 0.9rem; text-align: center;">
+        Developper par <a href="https://sagacetech.com" target="_blank" style="color: #FFC107; text-decoration: none;">SagaceTech</a> | 
+        Contact: <a href="tel:+15634680355" style="color: #FFC107; text-decoration: none;">+1 563-468-0355</a>
+    </p>
 </body>
 </html>

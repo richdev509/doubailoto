@@ -13,11 +13,17 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             line-height: 1.6;
             color: #333;
             overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
         }
 
         /* Header */
@@ -38,6 +44,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
         }
 
         .logo {
@@ -94,6 +101,21 @@
         }
 
         .nav-links a:hover {
+            color: #FFC107;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #333;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .mobile-menu-btn:hover {
             color: #FFC107;
         }
 
@@ -232,21 +254,6 @@
         .building-2 { left: 25%; width: 60px; height: 150px; }
         .building-3 { right: 30%; width: 100px; height: 250px; }
         .building-4 { right: 10%; width: 70px; height: 180px; }
-
-        .floating-moto {
-            position: absolute;
-            font-size: 3rem;
-            opacity: 0.1;
-            animation: floatMoto 4s ease-in-out infinite;
-        }
-
-        .floating-moto:nth-child(1) { top: 15%; right: 15%; animation-delay: 0s; }
-        .floating-moto:nth-child(2) { bottom: 20%; left: 10%; animation-delay: 2s; }
-
-        @keyframes floatMoto {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
-        }
 
         .hero-content {
             max-width: 1200px;
@@ -1169,11 +1176,70 @@
                 gap: 1rem;
             }
 
+            .navbar {
+                padding: 0.8rem 1rem;
+                max-width: 100%;
+            }
+
+            .logo {
+                flex-shrink: 0;
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+            }
+
+            .logo img {
+                height: 40px !important;
+            }
+
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                max-width: 300px;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+                transition: right 0.3s ease;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                margin: 0;
+                padding: 0;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 1rem 0;
+                font-size: 1.1rem;
+                border-bottom: 1px solid #eee;
             }
 
             .mobile-menu-btn {
+                display: block;
+            }
+
+            .mobile-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 998;
+            }
+
+            .mobile-overlay.active {
                 display: block;
             }
 
@@ -1266,7 +1332,7 @@
                 <li><a href="#features">Fonksyonalite</a></li>
                 <li><a href="#how-it-works">Kijan li fonksyone</a></li>
                 <li><a href="#download">Telechaje</a></li>
-                <li><a href="/login">Konekte</a></li>
+                <li style="display: none;"><a href="/login">Konekte</a></li>
             </ul>
             <button class="mobile-menu-btn">☰</button>
         </nav>
@@ -1286,12 +1352,10 @@
             <div class="building building-2"></div>
             <div class="building building-3"></div>
             <div class="building building-4"></div>
-            <div class="floating-moto">🏍️</div>
-            <div class="floating-moto">🏍️</div>
         </div>
         <div class="hero-content">
             <div class="hero-promo">
-                <div class="hero-promo-badge">🏍️ Ofè Chofè</div>
+                <div class="hero-promo-badge">Chofè Moto</div>
                 <h3>Vin Chofè YonKous</h3>
                 <div class="hero-promo-price">100 GDS</div>
                 <p style="color: #bbb; font-size: 0.9rem; margin-bottom: 1rem;">Frè Patisipasyon</p>
@@ -1319,7 +1383,6 @@
                 <h1>Yon Kous Rapid, Sekirize ki Kontwole</h1>
                 <p>Jwenn yon moto taxi nan mwens pase 2 minit. Sèvis 24/7 nan tout rejyon an.</p>
                 <div class="hero-buttons">
-                    <a href="/register" class="btn-primary">Kòmanse Kounye a</a>
                     <a href="#how-it-works" class="btn-secondary">Aprann Plis</a>
                 </div>
             </div>
@@ -1518,6 +1581,10 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 YonKous. Tout dwa rezève.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #999;">
+                Developper par <a href="https://sagacetech.com" target="_blank" style="color: #FFC107; text-decoration: none;">SagaceTech</a> | 
+                Contact: <a href="tel:+15634680355" style="color: #FFC107; text-decoration: none;">+1 563-468-0355</a>
+            </p>
         </div>
     </footer>
 
@@ -1526,138 +1593,162 @@
         let lastScrollY = 0;
         let ticking = false;
         let rideAnimationStarted = false;
+        const isMobile = window.innerWidth <= 768;
+        let animatedElements = new Map(); // Track animated elements
 
         function updateParallax() {
             const scrollY = window.scrollY;
             const scrollSpeed = Math.abs(scrollY - lastScrollY);
+            const scrollDirection = scrollY > lastScrollY ? 'down' : 'up';
 
-            // Speed lines appear when scrolling
-            const speedLines = document.getElementById('speedLines');
-            if (speedLines) {
-                speedLines.style.opacity = Math.min(scrollSpeed / 20, 1);
+            // Effets parallax pour desktop et mobile avec gestion dynamique
+            // Effets parallax pour desktop et mobile avec gestion dynamique
+            
+            // Speed lines (desktop uniquement)
+            if (!isMobile) {
+                const speedLines = document.getElementById('speedLines');
+                if (speedLines) {
+                    speedLines.style.opacity = Math.min(scrollSpeed / 20, 1);
+                }
+
+                const buildings = document.querySelectorAll('.building');
+                buildings.forEach((building, index) => {
+                    const speed = (index + 1) * 0.3;
+                    const yPos = scrollY * speed;
+                    building.style.transform = `translateY(${yPos}px)`;
+                });
+
+                const heroContent = document.querySelector('.hero-content');
+                if (heroContent) {
+                    heroContent.style.transform = `translateY(${scrollY * 0.5}px)`;
+                }
             }
 
-            // Building parallax
-            const buildings = document.querySelectorAll('.building');
-            buildings.forEach((building, index) => {
-                const speed = (index + 1) * 0.3;
-                const yPos = scrollY * speed;
-                building.style.transform = `translateY(${yPos}px)`;
-            });
-
-            // Hero content parallax
-            const heroContent = document.querySelector('.hero-content');
-            if (heroContent) {
-                heroContent.style.transform = `translateY(${scrollY * 0.5}px)`;
-            }
-
-            // Features section scroll-based animation
+            // Features section - actif sur desktop et mobile
             const featuresSection = document.querySelector('.features-hero');
             if (featuresSection) {
                 const rect = featuresSection.getBoundingClientRect();
                 const windowHeight = window.innerHeight;
-
-                // Calculate scroll progress through the section
-                // 0 = section is below viewport, 1 = section fully entered
-                let scrollProgress = 0;
-
-                if (rect.top < windowHeight) {
-                    scrollProgress = Math.min(1, (windowHeight - rect.top) / (windowHeight * 0.8));
-                }
-
-                // Moto image - slides from left as you scroll
-                const motoImage = document.querySelector('.features-main-image');
-                if (motoImage) {
-                    const motoStartPos = -150; // Start position (%)
-                    const motoEndPos = 0; // End position
-                    const currentMotoPos = motoStartPos + (scrollProgress * (motoEndPos - motoStartPos));
-                    const opacity = Math.min(1, scrollProgress * 1.5);
-
-                    motoImage.style.transform = `translateX(${currentMotoPos}%)`;
-                    motoImage.style.opacity = opacity;
-
-                    // Start ride animation when moto is fully visible
-                    if (scrollProgress > 0.9 && !rideAnimationStarted) {
-                        motoImage.classList.add('riding');
-                        rideAnimationStarted = true;
+                
+                // Vérifier si la section est visible
+                const isInViewport = rect.top < windowHeight && rect.bottom > 0;
+                const sectionKey = 'features-section';
+                
+                if (isInViewport) {
+                    let scrollProgress = 0;
+                    if (rect.top < windowHeight) {
+                        scrollProgress = Math.min(1, (windowHeight - rect.top) / (windowHeight * 0.8));
                     }
-                }
 
-                // Features intro text - follows moto
-                const featuresIntro = document.querySelector('.features-intro');
-                if (featuresIntro) {
-                    const textStartPos = -100;
-                    const textEndPos = 0;
-                    const textProgress = Math.max(0, scrollProgress - 0.1); // Slight delay
-                    const currentTextPos = textStartPos + (textProgress * (textEndPos - textStartPos));
-                    const textOpacity = Math.min(1, textProgress * 1.5);
-
-                    featuresIntro.style.transform = `translateX(${currentTextPos}px)`;
-                    featuresIntro.style.opacity = textOpacity;
-                }
-
-                // Stats items - staggered entrance
-                const statItems = document.querySelectorAll('.stat-item');
-                statItems.forEach((stat, index) => {
-                    const statStartPos = -80;
-                    const statEndPos = 0;
-                    const delay = index * 0.1;
-                    const statProgress = Math.max(0, scrollProgress - 0.2 - delay);
-                    const currentStatPos = statStartPos + (statProgress * (statEndPos - statStartPos));
-                    const statOpacity = Math.min(1, statProgress * 2);
-
-                    stat.style.transform = `translateX(${currentStatPos}px)`;
-                    stat.style.opacity = statOpacity;
-                });
-
-                // Speed rings - activate when moto is visible
-                const speedRings = document.querySelectorAll('.speed-ring');
-                if (scrollProgress > 0.7) {
-                    speedRings.forEach(ring => {
-                        ring.classList.add('active');
-                    });
-                }
-
-                // Parallax offset when scrolling within section
-                if (scrollProgress >= 1 && rect.bottom > windowHeight * 0.3) {
-                    const parallaxProgress = (windowHeight - rect.top) / windowHeight;
-                    const parallaxOffset = (parallaxProgress - 0.5) * 30;
-
+                    const motoImage = document.querySelector('.features-main-image');
                     if (motoImage) {
-                        const baseTransform = motoImage.style.transform || '';
-                        if (!baseTransform.includes('translateX(-')) {
-                            motoImage.style.transform = `translateX(${parallaxOffset * 0.5}px)`;
+                        const motoStartPos = isMobile ? -100 : -150;
+                        const motoEndPos = 0;
+                        const currentMotoPos = motoStartPos + (scrollProgress * (motoEndPos - motoStartPos));
+                        const opacity = Math.min(1, scrollProgress * 1.5);
+
+                        motoImage.style.transform = `translateX(${currentMotoPos}%)`;
+                        motoImage.style.opacity = opacity;
+                        
+                        // Marquer comme animé
+                        animatedElements.set('moto', true);
+
+                        if (scrollProgress > 0.9 && !rideAnimationStarted) {
+                            motoImage.classList.add('riding');
+                            rideAnimationStarted = true;
                         }
+                    }
+
+                    const featuresIntro = document.querySelector('.features-intro');
+                    if (featuresIntro) {
+                        const textStartPos = isMobile ? -50 : -100;
+                        const textEndPos = 0;
+                        const textProgress = Math.max(0, scrollProgress - 0.1);
+                        const currentTextPos = textStartPos + (textProgress * (textEndPos - textStartPos));
+                        const textOpacity = Math.min(1, textProgress * 1.5);
+
+                        featuresIntro.style.transform = `translateX(${currentTextPos}px)`;
+                        featuresIntro.style.opacity = textOpacity;
+                    }
+
+                    const statItems = document.querySelectorAll('.stat-item');
+                    statItems.forEach((stat, index) => {
+                        const statStartPos = isMobile ? -40 : -80;
+                        const statEndPos = 0;
+                        const delay = index * 0.1;
+                        const statProgress = Math.max(0, scrollProgress - 0.2 - delay);
+                        const currentStatPos = statStartPos + (statProgress * (statEndPos - statStartPos));
+                        const statOpacity = Math.min(1, statProgress * 2);
+
+                        stat.style.transform = `translateX(${currentStatPos}px)`;
+                        stat.style.opacity = statOpacity;
+                    });
+
+                    if (!isMobile) {
+                        const speedRings = document.querySelectorAll('.speed-ring');
+                        if (scrollProgress > 0.7) {
+                            speedRings.forEach(ring => {
+                                ring.classList.add('active');
+                            });
+                        }
+                    }
+                } else if (animatedElements.get('moto')) {
+                    // Section sortie du viewport - fixer l'état final
+                    if (rect.bottom < 0 && scrollDirection === 'down') {
+                        // Section passée - rester à l'état final
+                        const motoImage = document.querySelector('.features-main-image');
+                        if (motoImage && !motoImage.style.transform.includes('translateX(0')) {
+                            motoImage.style.transform = 'translateX(0%)';
+                            motoImage.style.opacity = '1';
+                        }
+                    } else if (rect.top > windowHeight && scrollDirection === 'up') {
+                        // Section pas encore atteinte - revenir à l'état initial
+                        animatedElements.delete('moto');
                     }
                 }
             }
 
-            // Features cards parallax
+            // Features cards
             const features = document.querySelectorAll('.feature-card');
             features.forEach((feature, index) => {
                 const rect = feature.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                const windowHeight = window.innerHeight;
+                const isInViewport = rect.top < windowHeight && rect.bottom > 0;
 
-                if (isVisible) {
-                    const scrollProgress = (window.innerHeight - rect.top) / window.innerHeight;
-                    const translateY = Math.max(0, (1 - scrollProgress) * 50);
+                if (isInViewport) {
+                    const scrollProgress = (windowHeight - rect.top) / windowHeight;
+                    const translateY = isMobile ? Math.max(0, (1 - scrollProgress) * 20) : Math.max(0, (1 - scrollProgress) * 50);
                     feature.style.transform = `translateY(${translateY}px)`;
                     feature.style.opacity = Math.min(scrollProgress * 2, 1);
+                    animatedElements.set(`feature-${index}`, true);
+                } else if (animatedElements.get(`feature-${index}`)) {
+                    // Fixer l'état quand on sort
+                    if (rect.bottom < 0) {
+                        feature.style.transform = 'translateY(0)';
+                        feature.style.opacity = '1';
+                    }
                 }
             });
 
-            // Steps parallax
+            // Steps
             const steps = document.querySelectorAll('.step');
             steps.forEach((step, index) => {
                 const rect = step.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                const windowHeight = window.innerHeight;
+                const isInViewport = rect.top < windowHeight && rect.bottom > 0;
 
-                if (isVisible) {
-                    const scrollProgress = (window.innerHeight - rect.top) / window.innerHeight;
-                    const translateY = Math.max(0, (1 - scrollProgress) * 30);
+                if (isInViewport) {
+                    const scrollProgress = (windowHeight - rect.top) / windowHeight;
+                    const translateY = isMobile ? Math.max(0, (1 - scrollProgress) * 15) : Math.max(0, (1 - scrollProgress) * 30);
                     const delay = index * 0.1;
                     step.style.transform = `translateY(${translateY}px)`;
                     step.style.opacity = Math.min((scrollProgress - delay) * 2, 1);
+                    animatedElements.set(`step-${index}`, true);
+                } else if (animatedElements.get(`step-${index}`)) {
+                    if (rect.bottom < 0) {
+                        step.style.transform = 'translateY(0)';
+                        step.style.opacity = '1';
+                    }
                 }
             });
 
@@ -1679,30 +1770,33 @@
             // Set initial state for features elements
             const motoImage = document.querySelector('.features-main-image');
             if (motoImage) {
-                motoImage.style.transform = 'translateX(-150%)';
+                motoImage.style.transform = isMobile ? 'translateX(-100%)' : 'translateX(-150%)';
                 motoImage.style.opacity = '0';
+                motoImage.style.transition = isMobile ? 'all 0.4s ease-out' : 'all 0.6s ease-out';
             }
 
             const featuresIntro = document.querySelector('.features-intro');
             if (featuresIntro) {
-                featuresIntro.style.transform = 'translateX(-100px)';
+                featuresIntro.style.transform = isMobile ? 'translateX(-50px)' : 'translateX(-100px)';
                 featuresIntro.style.opacity = '0';
+                featuresIntro.style.transition = isMobile ? 'all 0.4s ease-out' : 'all 0.6s ease-out';
             }
 
             document.querySelectorAll('.stat-item').forEach(stat => {
-                stat.style.transform = 'translateX(-80px)';
+                stat.style.transform = isMobile ? 'translateX(-40px)' : 'translateX(-80px)';
                 stat.style.opacity = '0';
+                stat.style.transition = isMobile ? 'all 0.4s ease-out' : 'all 0.6s ease-out';
             });
 
             // Set initial opacity for features cards
             document.querySelectorAll('.feature-card').forEach(feature => {
                 feature.style.opacity = 0;
-                feature.style.transition = 'all 0.6s ease-out';
+                feature.style.transition = isMobile ? 'all 0.4s ease-out' : 'all 0.6s ease-out';
             });
 
             document.querySelectorAll('.step').forEach(step => {
                 step.style.opacity = 0;
-                step.style.transition = 'all 0.6s ease-out';
+                step.style.transition = isMobile ? 'all 0.4s ease-out' : 'all 0.6s ease-out';
             });
 
             updateParallax();
@@ -1716,13 +1810,37 @@
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+                // Close mobile menu if open
+                if (window.innerWidth <= 768) {
+                    const navLinks = document.querySelector('.nav-links');
+                    const overlay = document.querySelector('.mobile-overlay');
+                    navLinks.classList.remove('active');
+                    if (overlay) overlay.classList.remove('active');
+                }
             });
         });
 
-        // Mobile menu (simple toggle)
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        let mobileOverlay = document.querySelector('.mobile-overlay');
+        
+        // Create overlay if it doesn't exist
+        if (!mobileOverlay) {
+            mobileOverlay = document.createElement('div');
+            mobileOverlay.className = 'mobile-overlay';
+            document.body.appendChild(mobileOverlay);
+        }
+
+        mobileMenuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking overlay
+        mobileOverlay.addEventListener('click', function() {
+            navLinks.classList.remove('active');
+            mobileOverlay.classList.remove('active');
         });
     </script>
 </body>
