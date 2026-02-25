@@ -1,2 +1,23 @@
 User-agent: *
-Disallow:
+
+# Pages autorisées (à indexer)
+Allow: /
+Allow: /about
+Allow: /become-driver
+Allow: /security
+Allow: /contact
+Allow: /faq
+Allow: /help
+Allow: /terms
+Allow: /privacy
+
+# Pages à bloquer (ne pas indexer)
+Disallow: /system-access
+Disallow: /admin/
+Disallow: /admin
+Disallow: /driver/register
+Disallow: /driver/register/success
+Disallow: /contact/submit
+
+# Sitemap
+Sitemap: https://yonkous.ht/sitemap.xml
